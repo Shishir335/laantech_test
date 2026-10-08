@@ -52,32 +52,38 @@ class TransferManagerSheetContent extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Active Transfers',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Active Transfers',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary,
+                      ),
                     ),
-                  ),
-                  Text(
-                    '${activeTasks.length} in progress • ${formatSpeed(transferState.totalActiveSpeed)}',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: AppColors.textSecondary,
+                    Text(
+                      '${activeTasks.length} in progress • ${formatSpeed(transferState.totalActiveSpeed)}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: AppColors.textSecondary,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-              if (transferState.completedTasks.isNotEmpty)
+              if (transferState.completedTasks.isNotEmpty) ...[
+                const SizedBox(width: 8),
                 TextButton.icon(
                   icon: const Icon(Icons.clear_all, size: 16),
                   label: const Text('Clear Done'),
                   onPressed: notifier.clearCompleted,
                 ),
+              ],
             ],
           ),
           const SizedBox(height: 16),
@@ -169,14 +175,19 @@ class PersistentTransferBanner extends ConsumerWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          '$totalActive Transfer${totalActive > 1 ? 's' : ''} Running',
-                          style: const TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.textPrimary,
+                        Expanded(
+                          child: Text(
+                            '$totalActive Transfer${totalActive > 1 ? 's' : ''} Running',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.textPrimary,
+                            ),
                           ),
                         ),
+                        const SizedBox(width: 8),
                         Text(
                           formatSpeed(speed),
                           style: const TextStyle(

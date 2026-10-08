@@ -136,38 +136,53 @@ class UploadScreenState extends ConsumerState<UploadScreen> {
                   ],
                 ),
                 const SizedBox(height: 20),
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        icon: const Icon(Icons.file_open_outlined, size: 18),
-                        label: const Text('Pick Large File (>50MB)'),
-                        onPressed: isGeneratingSample ? null : handlePickFile,
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final isNarrow = constraints.maxWidth < 420;
+                    final pickButton = OutlinedButton.icon(
+                      icon: const Icon(Icons.file_open_outlined, size: 18),
+                      label: const Text('Pick Large File (>50MB)'),
+                      onPressed: isGeneratingSample ? null : handlePickFile,
+                    );
+                    final generateButton = ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.surfaceElevated,
+                        foregroundColor: AppColors.secondary,
                       ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.surfaceElevated,
-                          foregroundColor: AppColors.secondary,
-                        ),
-                        icon: isGeneratingSample
-                            ? const SizedBox(
-                                width: 16,
-                                height: 16,
-                                child: CircularProgressIndicator(strokeWidth: 2),
-                              )
-                            : const Icon(Icons.auto_awesome, size: 18),
-                        label: Text(
-                          isGeneratingSample
-                              ? 'Generating (${(sampleGenProgress * 100).round()}%)'
-                              : 'Generate 50MB CSV',
-                        ),
-                        onPressed: isGeneratingSample ? null : handleGenerateSample,
+                      icon: isGeneratingSample
+                          ? const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Icon(Icons.auto_awesome, size: 18),
+                      label: Text(
+                        isGeneratingSample
+                            ? 'Generating (${(sampleGenProgress * 100).round()}%)'
+                            : 'Generate 50MB CSV',
                       ),
-                    ),
-                  ],
+                      onPressed: isGeneratingSample ? null : handleGenerateSample,
+                    );
+
+                    if (isNarrow) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          pickButton,
+                          const SizedBox(height: 10),
+                          generateButton,
+                        ],
+                      );
+                    }
+
+                    return Row(
+                      children: [
+                        Expanded(child: pickButton),
+                        const SizedBox(width: 12),
+                        Expanded(child: generateButton),
+                      ],
+                    );
+                  },
                 ),
                 if (selectedFilePath != null) ...[
                   const SizedBox(height: 16),
@@ -188,6 +203,8 @@ class UploadScreenState extends ConsumerState<UploadScreen> {
                             children: [
                               Text(
                                 selectedFileName ?? 'Selected File',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 13,
@@ -196,6 +213,8 @@ class UploadScreenState extends ConsumerState<UploadScreen> {
                               ),
                               Text(
                                 '${formatBytes(selectedFileSize)} ${selectedFileSize >= AppConstants.largeFileThresholdBytes ? "• Meets >50MB requirement" : ""}',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
                                   fontSize: 11,
                                   color: selectedFileSize >=
@@ -207,6 +226,7 @@ class UploadScreenState extends ConsumerState<UploadScreen> {
                             ],
                           ),
                         ),
+                        const SizedBox(width: 8),
                         ElevatedButton.icon(
                           icon: const Icon(Icons.upload, size: 16),
                           label: const Text('Upload'),

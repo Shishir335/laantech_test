@@ -86,10 +86,11 @@ class TransferProgressCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 4),
-                    Row(
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 4,
                       children: [
                         TransferTypeBadge(type: task.type),
-                        const SizedBox(width: 8),
                         StatusBadge(status: task.status),
                       ],
                     ),
@@ -121,15 +122,20 @@ class TransferProgressCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                '${formatBytes(task.transferredBytes)} / ${formatBytes(task.totalBytes)} (${task.percentage}%)',
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: AppColors.textSecondary,
-                  fontWeight: FontWeight.w500,
+              Expanded(
+                child: Text(
+                  '${formatBytes(task.transferredBytes)} / ${formatBytes(task.totalBytes)} (${task.percentage}%)',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textSecondary,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
-              if (task.isActive)
+              if (task.isActive) ...[
+                const SizedBox(width: 8),
                 Text(
                   '${formatSpeed(task.speedBytesPerSec)} • ETA ${formatEta(remainingBytes, task.speedBytesPerSec)}',
                   style: const TextStyle(
@@ -138,6 +144,7 @@ class TransferProgressCard extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
+              ],
             ],
           ),
           if (task.errorMessage != null && task.status == TransferStatus.failed) ...[

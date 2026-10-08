@@ -27,6 +27,7 @@ class PosAppBar extends ConsumerWidget implements PreferredSizeWidget {
     final isOnline = connectivityAsync.value ?? true;
 
     return AppBar(
+      titleSpacing: 12,
       title: Row(
         children: [
           Container(
@@ -41,20 +42,24 @@ class PosAppBar extends ConsumerWidget implements PreferredSizeWidget {
               size: 20,
             ),
           ),
-          const SizedBox(width: 10),
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 0.3,
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.2,
+              ),
             ),
           ),
         ],
       ),
       actions: [
         NetworkStatusChip(isOnline: isOnline),
-        const SizedBox(width: 10),
+        const SizedBox(width: 8),
         InkWell(
           borderRadius: BorderRadius.circular(20),
           onTap: () => showAuthDialog(context),
@@ -73,14 +78,19 @@ class PosAppBar extends ConsumerWidget implements PreferredSizeWidget {
                   color: AppColors.textSecondary,
                 ),
                 const SizedBox(width: 6),
-                Text(
-                  authState.isAuthenticated
-                      ? (authState.username ?? 'POS User')
-                      : 'Login',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 80),
+                  child: Text(
+                    authState.isAuthenticated
+                        ? (authState.username ?? 'POS User')
+                        : 'Login',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textPrimary,
+                    ),
                   ),
                 ),
               ],
@@ -88,7 +98,7 @@ class PosAppBar extends ConsumerWidget implements PreferredSizeWidget {
           ),
         ),
         ...?actions,
-        const SizedBox(width: 12),
+        const SizedBox(width: 10),
       ],
     );
   }
